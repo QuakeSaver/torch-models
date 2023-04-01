@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+
+[project]
+name = "torch_models"
+description = "QuakeSaver neural network models in TorchScript for edge computing."
+keywords = [
+    "seismic sensors",
+    "edge computing",
+    "neural networks",
+    "earthquake",
+    "seismology",
+]
+dynamic = ["version"]
+readme = "README.md"
+authors = [{ name = "Marius Paul Isken", email = "mi@quakesaver.net" }]
+dependencies = ["pydantic>=1.10", "seisbench == 0.3.2"]
+
+[project.scripts]
+seisbench-phasenet-export = "torch_models.seisbench_phasenet:main"
