@@ -1,4 +1,4 @@
-name: Export TorchScript models
+name: TorchScript Models
 
 on:
   pull_request:
