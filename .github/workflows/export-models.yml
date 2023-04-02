@@ -24,17 +24,17 @@ jobs:
           pip install .
       - name: Export models to TorchScript
         run: |
-          seisbench-phasenet-export dist/
-          cd dist/
-          tar -zcvf models-torchscript.tar.gz *.pt
+          seisbench-phasenet-export dist/torchscript-seisbench-phasenet/
+          cd dist/torchscript-seisbench-phasenet/
+          tar -zcvf ../torchscript-seisbench-phasenet.tar.gz *.pt
       - name: Upload TorchScript PhaseNet artifacts
         uses: actions/upload-artifact@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: seisbench-phasenet-models
-          path: dist/*.pt
+          name: torchscript-seisbench-phasenet
+          path: dist/torchscript-seisbench-phasenet/*.pt
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: dist/models-torchscript.tar.gz
+          files: dist/torchscript-seisbench-phasenet.tar.gz
