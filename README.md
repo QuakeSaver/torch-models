@@ -13,7 +13,7 @@ We are actively working on bringing neural networks for seismology and building 
 
 ### PhaseNet
 
-PhaseNet phase picker for P- and S- wave phase picks trained by [SeisBench](https://github.com/seisbench/seisbench) on various large data sets:
+PhaseNet phase detector for P- and S- wave phase picks trained by [SeisBench](https://github.com/seisbench/seisbench) on various large data sets:
 
 * ethz
 * geofon
