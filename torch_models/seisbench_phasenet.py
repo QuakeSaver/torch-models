@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Tuple
+from typing import Literal, Tuple
 
 import torch
 import torch.utils.mobile_optimizer
@@ -12,17 +12,20 @@ from seisbench.models import PhaseNet
 logging.basicConfig(level=logging.INFO)
 
 
-class DefaultArgs(BaseModel):
+class ModelArgs(BaseModel):
     P_threshold: float = 0.3
     S_threshold: float = 0.3
-    blinding: Tuple[int, int]
+    blinding: Tuple[int, int] = (250, 250)
+    normalization: Literal["std", "peak"]
+    vertical_first: bool
+    noise_index: int
 
 
 class ModelMetaData(BaseModel):
-    version: int = 1
     pre_trained: str
+    version: int = 1
     docstring: str
-    default_args: DefaultArgs
+    model_args: ModelArgs
 
 
 class PhaseNetExporter:
@@ -47,6 +50,14 @@ class PhaseNetExporter:
         weights_metadata: dict = self.model._weights_metadata
         version = weights_metadata.get("version", 1)
         weights_metadata["pre_trained"] = self.pre_trained
+
+        model_args = weights_metadata["model_args"]
+        model_args["normalization"] = model_args.get("norm", "std")
+        model_args["vertical_first"] = model_args["component_order"] == "ZNE"
+        model_args["noise_index"] = 0 if model_args["phases"].startswith("N") else 2
+        model_args.update(weights_metadata["default_args"])
+
+        weights_metadata["model_args"] = model_args
 
         meta_data = ModelMetaData(**weights_metadata)
 
