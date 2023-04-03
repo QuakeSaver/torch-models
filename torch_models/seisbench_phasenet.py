@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal, Tuple
 
 import torch
 import torch.utils.mobile_optimizer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from seisbench.models import PhaseNet
 
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +27,7 @@ class ModelMetaData(BaseModel):
     version: int = 1
     docstring: str
     model_args: ModelArgs
+    packed: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc))
 
 
 class PhaseNetExporter:
