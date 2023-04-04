@@ -40,8 +40,9 @@ class PhaseNetExporter:
 
     def export_model(self, path: Path, optimize_for_mobil: bool = False) -> None:
         # We have to export the trace before we can create the script.
+        self.model.eval()
         traced_script = torch.jit.trace(self.model, self.input)
-        script = torch.jit.script(traced_script)
+        script = torch.jit.optimize_for_inference(torch.jit.script(traced_script))
 
         if optimize_for_mobil:
             script = torch.utils.mobile_optimizer.optimize_for_mobile(script)
