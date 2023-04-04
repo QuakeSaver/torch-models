@@ -34,7 +34,11 @@ class PhaseNetExporter:
     input = torch.zeros(1, 3, 3001)
 
     def __init__(self, pre_trained: str, version_str: str = "latest"):
-        self.model = PhaseNet.from_pretrained(pre_trained, version_str=version_str)
+        self.model = PhaseNet.from_pretrained(
+            pre_trained,
+            update=True,
+            version_str=version_str,
+        )
         self.model.eval()
         self.pre_trained = pre_trained
 
