@@ -23,7 +23,7 @@ class ModelArgs(BaseModel):
 
 
 class ModelMetaData(BaseModel):
-    pre_trained: str
+    model_name: str
     version: int = 1
     docstring: str
     model_args: ModelArgs
@@ -33,14 +33,14 @@ class ModelMetaData(BaseModel):
 class PhaseNetExporter:
     input = torch.zeros(1, 3, 3001)
 
-    def __init__(self, pre_trained: str, version_str: str = "latest"):
+    def __init__(self, model_name: str, version_str: str = "latest"):
         self.model = PhaseNet.from_pretrained(
-            pre_trained,
+            model_name,
             update=True,
             version_str=version_str,
         )
         self.model.eval()
-        self.pre_trained = pre_trained
+        self.model_name = model_name
 
     def export_model(self, path: Path, optimize_for_mobil: bool = False) -> None:
         # We have to export the trace before we can create the script.
@@ -56,7 +56,7 @@ class PhaseNetExporter:
 
         weights_metadata: dict = self.model._weights_metadata
         version = weights_metadata.get("version", 1)
-        weights_metadata["pre_trained"] = self.pre_trained
+        weights_metadata["model_name"] = self.model_name
 
         model_args = weights_metadata["model_args"]
         model_args["normalization"] = model_args.get("norm", "std")
@@ -68,7 +68,7 @@ class PhaseNetExporter:
 
         meta_data = ModelMetaData(**weights_metadata)
 
-        filename = path / f"PhaseNet-{self.pre_trained}-v{version}.pt"
+        filename = path / f"PhaseNet-{self.model_name}-v{version}.pt"
         logging.info("Saving TorchScript model to %s", filename)
 
         torch.jit.save(
